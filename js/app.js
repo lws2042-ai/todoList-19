@@ -5,7 +5,7 @@ const message = document.querySelector("#message");
 
 let todos = [];
 
-todoForm.addEventListener("submit", function () {
+todoForm.addEventListener("submit", function (event) {
   event.preventDefault();
   const text = todoInput.value;
 
@@ -31,7 +31,35 @@ todoForm.addEventListener("submit", function () {
 
 function loadTodos() {
   const savedTodos = localStorage.getItem("daily-note");
-  const todos = JSON.parse(savedTodos);
+
+  if (savedTodos !== null) {
+    todos = JSON.parse(savedTodos);
+  }
+}
+
+function renderTodos() {
+  todoList.replaceChildren();
+
+  todos.forEach(function (todo) {
+    const item = document.createElement("li");
+    item.className = "todo-item";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "todo-checkbox";
+    const text = document.createElement("span");
+    text.className = "todo-text";
+    text.textContent = todo.text;
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className = "text-button";
+    editButton.textContent = "수정";
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "text-button delete-button";
+    deleteButton.textContent = "삭제";
+    item.append(checkbox, text, editButton, deleteButton);
+    todoList.append(item);
+  });
 }
 
 function saveTodos() {
@@ -43,36 +71,6 @@ function saveTodos() {
   }
 }
 
-function renderTodos() {
-  todoList.replaceChildren();
-
-  todos.forEach(function (todo) {
-    const item = document.createElement("li");
-    item.className = "todo-item";
-
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.className = "todo-checkbox";
-
-    const text = document.createElement("span");
-    text.className = "todo-text";
-    text.textContent = todo.text;
-
-    const editButton = document.createElement("button");
-    editButton.type = "button";
-    editButton.className = "text-button";
-    editButton.textContent = "수정";
-
-    const deleteButton = document.createElement("button");
-    deleteButton.type = "button";
-    deleteButton.className = "text-button delete-button";
-    deleteButton.textContent = "삭제";
-
-    item.append(checkbox, text, editButton, deleteButton);
-    todoList.append(item);
-  });
-
-  loadTodos();
-
-  console.log(todos);
-}
+loadTodos();
+renderTodos();
+console.log(todos);

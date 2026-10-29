@@ -21,12 +21,6 @@ todoForm.addEventListener("submit", function (event) {
 
   saveTodos();
   renderTodos();
-
-  //todoInput.value = "";
-  //   console.log(todos);
-  //   const item = document.createElement("li");
-  //   item.textContent = text;
-  //   todoList.append(item);
 });
 
 function loadTodos() {
@@ -43,23 +37,46 @@ function renderTodos() {
   todos.forEach(function (todo) {
     const item = document.createElement("li");
     item.className = "todo-item";
+
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.className = "todo-checkbox";
+    checkbox.checked = todo.completed;
+
+    checkbox.addEventListener("change", function () {
+      todo.completed = checkbox.checked;
+      saveTodos();
+      renderTodos();
+    });
+
     const text = document.createElement("span");
     text.className = "todo-text";
     text.textContent = todo.text;
+
     const editButton = document.createElement("button");
     editButton.type = "button";
     editButton.className = "text-button";
     editButton.textContent = "수정";
+
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
     deleteButton.className = "text-button delete-button";
     deleteButton.textContent = "삭제";
+    deleteButton.addEventListener("click", function () {
+      deleteTodo(todo.id);
+    });
     item.append(checkbox, text, editButton, deleteButton);
     todoList.append(item);
   });
+}
+
+function deleteTodo(id) {
+  // filter 메서드는 true인것만 선택적으로 새배열로 반환함
+  todos.filter(function (todo) {
+    return todo.id !== id;
+  });
+  saveTodos();
+  renderTodos();
 }
 
 function saveTodos() {

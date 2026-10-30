@@ -37,6 +37,9 @@ function renderTodos() {
   todos.forEach(function (todo) {
     const item = document.createElement("li");
     item.className = "todo-item";
+    if (todo.completed) {
+      item.classList.add("completed");
+    }
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -57,6 +60,10 @@ function renderTodos() {
     editButton.type = "button";
     editButton.className = "text-button";
     editButton.textContent = "수정";
+    editButton.addEventListener("click", function () {
+      console.log(todo, item);
+      updateTodo(todo, item);
+    });
 
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
@@ -68,6 +75,41 @@ function renderTodos() {
     item.append(checkbox, text, editButton, deleteButton);
     todoList.append(item);
   });
+}
+
+function updateTodo(todo, item) {
+  const editInput = document.createElement("input");
+  editInput.type = "text";
+  editInput.className = "edit-input";
+  editInput.value = todo.text;
+
+  function saveUpdate() {
+    // console.log("업데이트 버튼 클릭!");
+    const newText = editInput.value;
+    if (newText === "") {
+      message.textContent = "수정할 내용을 입력해주세요.";
+      return;
+    }
+    todo.text = newText;
+    saveTodos();
+    renderTodos();
+  }
+
+  const saveButton = document.createElement("button");
+  saveButton.type = "button";
+  saveButton.className = "text-button";
+  saveButton.textContent = "저장";
+  saveButton.addEventListener("click", saveUpdate);
+
+  const cancelButton = document.createElement("button");
+  cancelButton.className = "text-button";
+  cancelButton.type = "button";
+  cancelButton.textContent = "취소";
+  cancelButton.addEventListener("click", function () {
+    renderTodos();
+  });
+
+  item.append(editInput, saveButton, cancelButton);
 }
 
 function deleteTodo(id) {
